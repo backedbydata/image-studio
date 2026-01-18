@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Studio Icon Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        canvas {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        .sizes {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .size-preview {
+            text-align: center;
+        }
+        .size-preview canvas {
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Image Studio Icon</h1>
+        <p class="subtitle">Professional Image Resizing & Cropping</p>
+
+        <div class="sizes">
+            <div class="size-preview">
+                <canvas id="icon256" width="256" height="256"></canvas>
+                <div>256x256</div>
+            </div>
+            <div class="size-preview">
+                <canvas id="icon48" width="48" height="48"></canvas>
+                <div>48x48</div>
+            </div>
+            <div class="size-preview">
+                <canvas id="icon32" width="32" height="32"></canvas>
+                <div>32x32</div>
+            </div>
+            <div class="size-preview">
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <div>16x16</div>
+            </div>
+        </div>
+
+        <button onclick="downloadPNG()">Download 256x256 PNG</button>
+
+        <div class="info">
+            <strong>Next Steps:</strong><br>
+            1. Download the PNG image above<br>
+            2. Use an online converter like <a href="https://convertio.co/png-ico/" target="_blank">convertio.co/png-ico</a><br>
+            3. Convert to ICO format with multiple sizes (256, 48, 32, 16)<br>
+            4. Save as icon.ico in the resources folder
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const scale = size / 256;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Add rounded corners effect
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            const radius = size * 0.15;
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Draw image frame icon
+            ctx.save();
+            ctx.translate(size * 0.5, size * 0.5);
+            ctx.scale(scale, scale);
+
+            // Main frame
+            ctx.strokeStyle = 'white';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 16;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            // Outer frame
+            ctx.beginPath();
+            ctx.roundRect(-90, -90, 180, 180, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            // Image layers effect (stacked frames)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 12;
+
+            ctx.beginPath();
+            ctx.roundRect(-80, -70, 160, 140, 8);
+            ctx.stroke();
+
+            // Crop marks in corners
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 10;
+
+            const markLength = 25;
+            const offset = 60;
+
+            // Top-left
+            ctx.beginPath();
+            ctx.moveTo(-offset, -offset + markLength);
+            ctx.lineTo(-offset, -offset);
+            ctx.lineTo(-offset + markLength, -offset);
+            ctx.stroke();
+
+            // Top-right
+            ctx.beginPath();
+            ctx.moveTo(offset, -offset + markLength);
+            ctx.lineTo(offset, -offset);
+            ctx.lineTo(offset - markLength, -offset);
+            ctx.stroke();
+
+            // Bottom-left
+            ctx.beginPath();
+            ctx.moveTo(-offset, offset - markLength);
+            ctx.lineTo(-offset, offset);
+            ctx.lineTo(-offset + markLength, offset);
+            ctx.stroke();
+
+            // Bottom-right
+            ctx.beginPath();
+            ctx.moveTo(offset, offset - markLength);
+            ctx.lineTo(offset, offset);
+            ctx.lineTo(offset - markLength, offset);
+            ctx.stroke();
+
+            // Resize arrows
+            ctx.strokeStyle = 'white';
+            ctx.fillStyle = 'white';
+            ctx.lineWidth = 8;
+
+            // Diagonal arrow bottom-right
+            const arrowSize = 15;
+            ctx.beginPath();
+            ctx.moveTo(35, 35);
+            ctx.lineTo(55, 55);
+            ctx.stroke();
+
+            // Arrow head
+            ctx.beginPath();
+            ctx.moveTo(55, 55);
+            ctx.lineTo(55 - arrowSize, 55);
+            ctx.lineTo(55, 55 - arrowSize);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Draw all sizes
+        drawIcon(document.getElementById('icon256'), 256);
+        drawIcon(document.getElementById('icon48'), 48);
+        drawIcon(document.getElementById('icon32'), 32);
+        drawIcon(document.getElementById('icon16'), 16);
+
+        function downloadPNG() {
+            const canvas = document.getElementById('icon256');
+            const link = document.createElement('a');
+            link.download = 'image-studio-icon.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

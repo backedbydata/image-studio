@@ -1,0 +1,25 @@
+appId: com.imagestudio.app
+productName: Image Studio
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+win:
+  target:
+    - nsis
+    - portable
+  icon: resources/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Image Studio
+portable:
+  artifactName: "${productName}-${version}-portable.exe"
+extraResources:
+  - from: node_modules/sharp
+    to: node_modules/sharp
+    filter:
+      - "**/*"

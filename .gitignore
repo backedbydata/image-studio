@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Personal/private files directory
+.ignore/
+
+# Claude Code local settings and temporary files
+.claude/settings.local.json
+.claude/*.local.json
+tmpclaude-*
